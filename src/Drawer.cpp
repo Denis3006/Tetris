@@ -4,9 +4,9 @@
 #include "SFML/Graphics/RectangleShape.hpp"
 namespace Drawer
 {
-	Drawer::Drawer(int block_size) : window(sf::VideoMode(800, 600), "Tetris"), block_size(block_size)
+	Drawer::Drawer(int block_size, int fps) : window(sf::VideoMode(1280, 1280), "Tetris"), block_size(block_size)
 	{
-		window.setFramerateLimit(60);
+		window.setFramerateLimit(fps);
 		draw_borders();
 		window.display();
 	}
@@ -31,12 +31,7 @@ namespace Drawer
 		sf::RectangleShape rect(sf::Vector2f(block_size - 1, block_size - 1));
 		for (int y = 0; y < board.get_height(); y++) {
 			for (int x = 0; x < board.get_width(); x++) {
-				if (board.block_is_full(x, y)) {
-					rect.setFillColor(sf::Color::White);
-				}
-				else {
-					rect.setFillColor(sf::Color(20, 23, 79));
-				}
+				rect.setFillColor(board.block_color(x, y));
 				rect.setPosition((x + 1) * block_size, (board_y_offset + y) * block_size);
 				window.draw(rect);
 			}

@@ -3,26 +3,28 @@
 
 namespace Board
 {
-	Board::Board(unsigned int board_width, unsigned int board_height)
+	Board::Board(unsigned int board_width, unsigned int board_height) : EMPTY_COLOR(20, 23, 79)
 	{
 		board.resize(board_height);
-		for (auto& row : board)
-			row.resize(board_width);
+		for (auto& row : board) {
+			row.resize(board_width, EMPTY_COLOR);
+		}
 	}
 
-	bool Board::block_is_full(unsigned int x, unsigned int y) const
+	sf::Color Board::block_color(unsigned x, unsigned y) const
 	{
 		return board[y][x];
 	}
 
-	bool Board::is_game_over() const
+	bool Board::block_is_full(unsigned int x, unsigned int y) const
 	{
-		return board[0].any();
+		return board[y][x] != EMPTY_COLOR;
 	}
+
 
 	bool Board::first_row_has_blocks() const
 	{
-		return board[0].any();
+		return std::any_of(board[0].begin(), board[0].end(), [this](sf::Color c) { return c != this->EMPTY_COLOR; });
 	}
 
 	void Board::clear_full_lines()
@@ -40,7 +42,7 @@ namespace Board
 					board[line] = board[line - 1];
 				}
 				else {
-					board[line].reset();
+					clear_line(line);
 				}
 			}
 			++n_cleared_lines;
@@ -55,7 +57,8 @@ namespace Board
 					int board_y = piece_y + piece.get_y_pos();
 					int board_x = piece_x + piece.get_x_pos();
 					if (block_in_board(board_x, board_y)) {
-						board[board_y][board_x] = true;
+						board[board_y][board_x] = piece.get_color();
+						//board[board_y][board_x].a = 128;
 					}
 				}
 			}
@@ -72,9 +75,15 @@ namespace Board
 		return board.size();
 	}
 
+	void Board::clear_line(size_t line)
+	{
+		for (auto& c : board[line])
+			c = EMPTY_COLOR;
+	}
+
 	bool Board::line_is_full(size_t line) const
 	{
-		return board[line].all();
+		return std::all_of(board[line].begin(), board[line].end(), [this](sf::Color c) { return c != this->EMPTY_COLOR; });
 	}
 
 	bool Board::block_in_board(int x, int y) const

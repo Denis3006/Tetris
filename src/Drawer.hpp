@@ -12,7 +12,7 @@ namespace Drawer
 	class Drawer
 	{
 	public:
-		Drawer(int block_size);
+		Drawer(int block_size, int fps);
 		void draw_game(Game::Game& game);
 		sf::RenderWindow window;
 	private:

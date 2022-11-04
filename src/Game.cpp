@@ -4,7 +4,7 @@
 
 namespace Game
 {
-	Game::Game(int board_width, int board_heigth, int block_size) : board(board_width, board_heigth), drawer(block_size), frames_per_drop(1 / 0.01667)
+	Game::Game(int board_width, int board_heigth, int block_size, int fps) : board(board_width, board_heigth), drawer(block_size, fps), frames_per_drop(1 / 0.01667)
 	{
 	}
 
