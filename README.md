@@ -1,1 +1,1 @@
-# cpp_tetris
+Tetris game written in C++ using SFML
