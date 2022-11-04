@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <functional>
+
 #include "Board.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
 
