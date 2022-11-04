@@ -18,6 +18,7 @@ namespace Piece
 		Piece(piece_type pt);
 		void rotate(uint8_t rotation=1);
 		void move(int x, int y);
+		void reset_position();
 		bool block_is_full(unsigned int x, unsigned int y) const;
 
 		int get_x_pos() const;

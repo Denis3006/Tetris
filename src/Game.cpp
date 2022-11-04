@@ -10,7 +10,6 @@ namespace Game
 
 	void Game::get_user_input()
 	{
-		static bool block_hard_drop = false;
 		sf::Event event;
 		if (current_piece_exists() && drawer.window.pollEvent(event)) {
 			if (event.type == sf::Event::KeyPressed) {
@@ -34,15 +33,19 @@ namespace Game
 					if (piece_movement_possible(0, 0, 1))
 						rotate_piece(1);
 				}
-				if (event.key.code == sf::Keyboard::Space && !block_hard_drop) {
+				if (event.key.code == sf::Keyboard::C || event.key.code == sf::Keyboard::LControl) {
+					if (current_piece_exists())
+						hold_piece();
+				}
+				if (event.key.code == sf::Keyboard::Space && !hard_drop_blocked) {
 					hard_drop_piece();
 					frames_at_end_position = lock_delay_frames;
-					block_hard_drop = true;
+					hard_drop_blocked = true;
 				}
 			}
 			if (event.type == sf::Event::KeyReleased) {  // unblock hard drop
 				if (event.key.code == sf::Keyboard::Space) {
-					block_hard_drop = false;
+					hard_drop_blocked = false;
 				}
 			}
 		}
@@ -58,11 +61,12 @@ namespace Game
 		if (piece_at_end_position()) {
 			++frames_at_end_position;
 			if ((!piece_movement_possible(1, 0, 0) && !piece_movement_possible(-1, 0, 0) &&
-				!piece_movement_possible(0, 0, 1) && !piece_movement_possible(0, 0, -1)) ||
+				 !piece_movement_possible(0, 0, 1) && !piece_movement_possible(0, 0, -1)) ||
 				 frames_at_end_position >= lock_delay_frames) {
 				board.store_piece(*current_piece);
 				board.clear_full_lines();
 				current_piece = nullptr;
+				hold_blocked = false;
 			}			
 		}
 		else {
@@ -101,10 +105,20 @@ namespace Game
 		current_piece->rotate(r);
 	}
 
-	//void Game::hold_piece()
-	//{
-		
-	//}
+	void Game::hold_piece()
+	{
+		if (!hold_blocked) {
+			if (piece_on_hold == nullptr) {
+				piece_on_hold = current_piece;
+				create_new_piece();
+			}
+			else {
+				piece_on_hold.swap(current_piece);
+				current_piece->reset_position();
+			}
+			hold_blocked = true;
+		}
+	}
 
 	Board::Board Game::get_board() const
 	{
@@ -116,6 +130,11 @@ namespace Game
 		return *current_piece;
 	}
 
+	Piece::Piece Game::get_piece_on_hold() const
+	{
+		return *piece_on_hold;
+	}
+
 	std::vector<Piece::Piece> Game::preview_pieces(int n)
 	{
 		return piece_generator.preview_pieces(n);
@@ -124,6 +143,11 @@ namespace Game
 	bool Game::current_piece_exists() const
 	{
 		return current_piece != nullptr;
+	}
+
+	bool Game::piece_on_hold_exists() const
+	{
+		return piece_on_hold != nullptr;
 	}
 
 	bool Game::piece_movement_possible(int dx, int dy, int r)
@@ -159,7 +183,7 @@ namespace Game
 
 	void Game::create_new_piece()
 	{
-		current_piece = std::make_unique<Piece::Piece>(piece_generator.generate_piece());
+		current_piece = std::make_shared<Piece::Piece>(piece_generator.generate_piece());
 	}
 
 	void Game::drop_piece()

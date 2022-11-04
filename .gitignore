@@ -3,3 +3,5 @@ bin/
 *.ppm
 *.png
 *.jpg
+*.filters
+*.user

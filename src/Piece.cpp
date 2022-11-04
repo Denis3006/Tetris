@@ -80,6 +80,13 @@ namespace Piece
 		y_pos += y;
 	}
 
+	void Piece::reset_position()
+	{
+		x_pos = x_pos_init;
+		y_pos = y_pos_init;
+		rotation = 0;
+	}
+
 	bool Piece::block_is_full(unsigned int x, unsigned int y) const
 	{
 		return piece_data[rotation][y][x];
