@@ -116,6 +116,11 @@ namespace Game
 		return *current_piece;
 	}
 
+	std::vector<Piece::Piece> Game::preview_pieces(int n)
+	{
+		return piece_generator.preview_pieces(n);
+	}
+
 	bool Game::current_piece_exists() const
 	{
 		return current_piece != nullptr;

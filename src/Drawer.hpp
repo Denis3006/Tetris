@@ -13,12 +13,14 @@ namespace Drawer
 	{
 	public:
 		Drawer(int block_size);
-		void draw_game(const Game::Game& game);
+		void draw_game(Game::Game& game);
 		sf::RenderWindow window;
 	private:
 		const int block_size;
-		void draw_board(const Board::Board& b);
-		void draw_piece(const Piece::Piece& p);
+		int board_y_offset = 7;
+		void draw_board(const Board::Board& board);
+		void draw_piece(const Piece::Piece& piece, int x_pos, int y_pos, std::function<bool(int x, int y)> draw_block);
+		void draw_piece_preview(const std::vector<Piece::Piece>& piece_preview);
 		void draw_borders();
 	};
 }

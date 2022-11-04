@@ -22,6 +22,7 @@ namespace Game
 		//void hold_piece();
 		Board::Board get_board() const;
 		Piece::Piece get_current_piece() const;
+		std::vector<Piece::Piece> preview_pieces(int n);
 		bool current_piece_exists() const;
 		bool piece_movement_possible(int dx, int dy, int r);
 	private:
